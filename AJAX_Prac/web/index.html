@@ -5,11 +5,60 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript"> 
+            // Create a function to check id company for characters up to 8
+            function checkIdCompany() {
+                var idCompany = document.getElementById("idCompany").value;
+                if (idCompany.length > 8) {
+                    alert("Id company must be less than 8 characters");
+                    return false;
+                }
+                return true;
+            };
+
+            // create a function to make sure input in id shares are positive
+            function checkIdShares() {
+                var idShares = document.getElementById("idShares").value;
+                if (idShares < 0) {
+                    alert("Id shares must be positive");
+                    return false;
+                }
+                return true;
+            };
+
+            // create a function to get the server response when user click submit
+            function getServerResponse() {
+                var idCompany = document.getElementById("idCompany").value;
+                var idShares = document.getElementById("idShares").value;
+                var radioValue = document.querySelector('input[name="decision"]:checked').value;
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        var str="<table border=1 width='40%'>";
+                        str+="<tr><td>Company: </td><td>"+idCompany+"</td></tr>";
+                        str+="<tr><td>Shares: </td><td>"+idShares+"</td></tr>";
+                        str+="<tr><td>Decision: </td><td>"+radioValue+"</td></tr>";
+                        str=str +"</table>";
+                        document.getElementById("response").innerHTML = str;
+                    }
+                };
+                xmlhttp.open("GET", "form", true);
+                xmlhttp.send();
+            };
         </script>
     </head>
     <body>
         <h1>High-stakes stock trading from the Web Programming Lab!</h1>
-        Company: <input type="text" id="company">
-        Shares: <input type="text" id="company"/>
+
+        <form method="get" id="form">
+        Company: <input type="text" id="idCompany" oninput="checkIdCompany();" />
+        Shares: <input type="text" id="idShares" oninput="checkIdShares();" />
+        
+            <input type="radio" name="decision" value="Buy" />
+            <input type="radio" name="decision" value="Sell" />
+            <br />
+            <input type="submit" value="Place Order" onclick="getServerResponse();" />
+        </form>
+
+        <div id="response"></div>
     </body>
 </html>
